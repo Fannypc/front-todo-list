@@ -12,15 +12,15 @@ export default class Auth extends React.Component{
     constructor() {
         super();
         this.state = {
-          showView: "loader",
+          showView: "login",
           formData:{},
           estatusPeticion:false,
         };
       }
 
-    componentDidMount() {
-        setTimeout(() => this.setState({ showView: "login" }), 2000);
-    }
+    // componentDidMount() {
+    //     setTimeout(() => this.setState({ showView: "home" }), 2000);
+    // }
 
     registerView = () => {
         this.setState({showView:"register"});
@@ -56,10 +56,9 @@ export default class Auth extends React.Component{
                         registerFn={this.register}
                         setInputValueFn={this.setInputValue}/>;
             default:
-                return <Login 
-                        registerViewFn={this.registerView} 
-                        loginFn={this.login} 
-                        homeViewFn={this.homeView}
+                return <Home
+                        loginViewFn={this.loginView}
+                        registerFn={this.register}
                         setInputValueFn={this.setInputValue}/>;
         }
     }
@@ -70,7 +69,8 @@ export default class Auth extends React.Component{
 
     login = evento => {
         evento.preventDefault();
-        let url = "https://academlo-todolist.herokuapp.com/login";
+        let url = "http://localhost:8000/api/v1/login";
+        //let url = "https://academlo-todolist.herokuapp.com/login";
         let opciones = {
             method: "POST",
             headers: {
@@ -81,10 +81,10 @@ export default class Auth extends React.Component{
 
         fetch(url, opciones)
         .then(respuesta => {
-            return respuesta.json;
+            return respuesta.json();
         })
         .then(datos => {
-            console.log(datos);
+            console.log(datos.message);
         })
         .catch(error => {
             console.log(error);
@@ -93,7 +93,8 @@ export default class Auth extends React.Component{
 
     register = evento => {
         evento.preventDefault();
-        let url = "https://academlo-todolist.herokuapp.com/register";
+        let url = "http://localhost:8000/api/v1/register";
+        // let url = "https://academlo-todolist.herokuapp.com/register";
         let opciones = {
             method: "POST",
             headers: {

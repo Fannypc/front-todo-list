@@ -1,0 +1,18 @@
+.home-dashboard {
+    background-color:#fffdfb;
+    border-radius: 20px;
+    height: 100vh;
+    overflow: auto;
+}
+
+.black{
+    background-color: black;
+}
+
+.home-task{
+    margin: 10px 0;
+}
+
+.home-tasks-container{
+    margin-top: 3rem
+}

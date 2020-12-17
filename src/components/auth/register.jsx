@@ -21,11 +21,11 @@ export default class Register extends React.Component{
                                     <Form onInput={this.props.setInputValueFn} onSubmit={this.props.registerFn}>
                                         <Form.Group controlId="formBasicEmail">
                                             <Form.Label>Nombre</Form.Label>
-                                            <Form.Control type="text" name="name" placeholder="Ingresa tu nombre" />
+                                            <Form.Control type="text" name="first_name" placeholder="Ingresa tu nombre" />
                                         </Form.Group>
                                         <Form.Group controlId="formBasicEmail">
                                             <Form.Label>Apellidos</Form.Label>
-                                            <Form.Control type="text" name="lastname" placeholder="Ingresa tus apellidos" />
+                                            <Form.Control type="text" name="last_name" placeholder="Ingresa tus apellidos" />
                                         </Form.Group>
                                         <Form.Group controlId="formBasicEmail">
                                             <Form.Label>Email</Form.Label>
