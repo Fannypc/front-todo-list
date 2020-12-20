@@ -1,4 +1,5 @@
 import React from 'react';
+import useHistory from 'react';
 import './style.css';
 import Login from './login';
 import Register from './register';
@@ -6,9 +7,17 @@ import Loader from '../common/loader';
 import Home from '../home/index';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+  } from "react-router-dom";
+
 
 toast.configure();
 export default class Auth extends React.Component{
+
     constructor() {
         super();
         this.state = {
@@ -16,6 +25,8 @@ export default class Auth extends React.Component{
           formData:{},
           estatusPeticion:false,
         };
+
+        
       }
 
     // componentDidMount() {
@@ -67,10 +78,10 @@ export default class Auth extends React.Component{
         toast('Basic notification!');
     }
 
+
     login = evento => {
         evento.preventDefault();
         let url = "http://localhost:8000/api/v1/login";
-        //let url = "https://academlo-todolist.herokuapp.com/login";
         let opciones = {
             method: "POST",
             headers: {
@@ -81,20 +92,24 @@ export default class Auth extends React.Component{
 
         fetch(url, opciones)
         .then(respuesta => {
+            this.setState({estatusPeticion:respuesta.ok});
             return respuesta.json();
         })
         .then(datos => {
-            console.log(datos.message);
+            if(this.state.estatusPeticion){
+                toast(datos.message);
+                console.log(datos.message);
+            }
         })
         .catch(error => {
             console.log(error);
         });
     };
 
+
     register = evento => {
         evento.preventDefault();
         let url = "http://localhost:8000/api/v1/register";
-        // let url = "https://academlo-todolist.herokuapp.com/register";
         let opciones = {
             method: "POST",
             headers: {
@@ -130,6 +145,28 @@ export default class Auth extends React.Component{
         });
     };
 
+    async fetchAPI(methodType, url, data){
+        try {
+            let result = await fetch(url, {
+                method: methodType,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)  
+            }); // wait until request is done
+            let responseOK = result && result.ok;
+            if (responseOK) {
+                let data = await result.json();
+                // do something with data
+                return data;
+            } else {
+                return result;
+            }
+        } catch (error) {
+            // log your error, you can also return it to handle it in your calling function
+        }
+    }
 
     render(){
         return (

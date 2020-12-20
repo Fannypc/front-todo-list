@@ -14,18 +14,18 @@ export default function Task(props){
         <Form>
             <Form.Row className="home-task">
                 <Col xs={8}>
-                    <Form.Control type="text" placeholder="Normal text" />
+                    <Form.Control type="text" placeholder="Normal text" value={props.task.content} />
                 </Col>
                 <Col xs={2}>
                     <Form.Control type="text" placeholder="Normal text" />
                 </Col>
                 <Col xs={1} className="justify-center">
-                    <Button type="submit" className="mb-2">
+                    <Button type="button" className="mb-2">
                         <PencilSquare/>
                     </Button>
                 </Col>
                 <Col xs={1} className="justify-center">
-                    <Button type="submit" className="mb-2" variant="danger">
+                    <Button type="button" className="mb-2" variant="danger" onClick={() => props.deleteTaskFn(props.task.id)}>
                         <Trash/>
                     </Button>
                 </Col>
