@@ -9,3 +9,15 @@
     display: flex;
     justify-content: center;
 }
+
+.d-none {
+    display: none;
+}
+
+.input-disabled{
+    background-color: #e9ecef;
+    box-shadow: none;
+    border: none;
+    pointer-events: none;
+    color: #495057;
+}
