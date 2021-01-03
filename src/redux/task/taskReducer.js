@@ -1,4 +1,4 @@
-import {SET_TASKS, ADD_TASK, TASK_UPDATED} from './taskActions';
+import {SET_TASKS, ADD_TASK, TASK_UPDATED, TASK_DELETED} from './taskActions';
 
 export default function tasks(state=[], action={}){
     switch(action.type){
@@ -14,6 +14,8 @@ export default function tasks(state=[], action={}){
                 if (item.id===action.task.id) return action.task;
                 return item
             });
+        case TASK_DELETED:
+            return state.filter(item => item.id !== action.taskId);
         default: return state;
     }
 }

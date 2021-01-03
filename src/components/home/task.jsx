@@ -2,17 +2,16 @@ import React from 'react';
 import {
     Form, 
     Col, 
-    Button,
-    Container
+    Button
 } from 'react-bootstrap';
-import { ArrowRight, Trash, PencilSquare } from 'react-bootstrap-icons';
+import { Trash, PencilSquare, Check, X } from 'react-bootstrap-icons';
 import DatePicker from 'react-datepicker';
 import { registerLocale } from  "react-datepicker";
 import es from 'date-fns/locale/es';
 import {toast} from 'react-toastify';
 import '../common/style.css';
 import { connect } from 'react-redux';
-import { updateTask } from '../../redux/task/taskActions';
+import { fetchTasks, updateTask } from '../../redux/task/taskActions';
 
 
 toast.configure();
@@ -31,7 +30,7 @@ class Task extends React.Component{
                 status_id: this.props.task.status.id
             }
         };
-        this.handleChange = this.handleChange.bind(this);
+        this.handleDatepicker = this.handleDatepicker.bind(this);
     }
 
     componentDidMount(){
@@ -48,7 +47,7 @@ class Task extends React.Component{
         this.props.updateTask(id, this.state.formData).then(
             () => {
                 toast.success('Tarea editada con exito');
-                // this.props.fetchTasks();
+                this.props.fetchTasks();
             },
             (err) => {console.log('error:');console.log(err);err.response.json().then(({errors}) => console.log(errors))}
         );
@@ -63,30 +62,35 @@ class Task extends React.Component{
         });
     };
 
-    handleChange(date) {
+    handleDatepicker(date) {
         this.setState({
             formData: {
             ...this.state.formData,
             due_date: date
             }
         });
-        
     }
 
     disable = (event) => {
         var element = event.target;
         var form = element.closest('form');
         var allElements = [].slice.call(form.elements);
-        //var allElements = form.elements;
         
+        var buttons = allElements.filter(el => (
+            el.tagName === 'BUTTON'
+        ));
+
+        for (var i = 0, l = buttons.length; i < l; ++i) {
+            // buttons[i].disabled=!buttons[i].disabled;
+            buttons[i].classList.toggle('d-none');
+        }
+
         allElements = allElements.filter(el => (
             el.tagName !== 'BUTTON' 
         ));
-    
         for (var i = 0, l = allElements.length; i < l; ++i) {
             allElements[i].disabled=!allElements[i].disabled;
         }
-
     }
 
 
@@ -102,7 +106,7 @@ class Task extends React.Component{
                         <Col xs={2}>
                             <DatePicker
                                 selected = {this.state.formData.due_date} 
-                                onChange={this.handleChange}
+                                onChange={this.handleDatepicker}
                                 name="due_date"
                                 className='datepicker'
                                 locale="es"
@@ -124,16 +128,17 @@ class Task extends React.Component{
                             </Form.Control>
                         </Col>
                         <Col xs={1} className="justify-center">
-                            <Button type="button" className="mb-2" onClick={(e) => this.disable(e)}>
+                            <Button type="button" className="mb-2 mr-1 ml-2" onClick={(e) => this.disable(e)}>
                                 <PencilSquare/>
                             </Button>
-                        </Col>
-                        <Col xs={1} className="justify-center">
-                            <Button type="button" className="mb-2 d-none" variant="danger" onClick={() => this.props.deleteTaskFn(this.props.task.id)}>
+                            <Button type="button" className="mb-2 mr-1 ml-1" variant="danger" onClick={() => this.props.deleteTaskFn(this.props.task.id)}>
                                 <Trash/>
                             </Button>
-                            <Button type="submit" className="mb-2">
-                                Editar
+                            <Button type="submit" className="mb-2 mr-1 ml-2 d-none" variant="success">
+                                <Check/>
+                            </Button>
+                            <Button type="button" className="mb-2 mr-1 ml-1 d-none" variant="danger" onClick={(e) => this.disable(e)}>
+                                <X/>
                             </Button>
                         </Col>
                     </Form.Row>
@@ -145,4 +150,4 @@ class Task extends React.Component{
     }
 }
 
-export default connect(null, {updateTask})(Task);
+export default connect(null, {fetchTasks, updateTask})(Task);

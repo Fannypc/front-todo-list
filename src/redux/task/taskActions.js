@@ -1,13 +1,12 @@
 export const SET_TASKS = 'SET_TASKS';
 export const ADD_TASK = 'ADD_TASK';
 export const TASK_UPDATED = 'TASK_UPDATED';
+export const TASK_DELETED = 'TASK_DELETED';
 
 function handleResponse(response){
     if(response.ok){
-        console.log('estoy en el ok');
         return response.json();
     }else{
-        console.log('estoy en el error');
         let error = new Error(response.statusText);
         error.response = response;
         throw error;
@@ -35,6 +34,13 @@ export function taskUpdated(task){
     }
 }
 
+export function taskDeleted(taskId){
+    return {
+        type: TASK_DELETED,
+        taskId
+    }
+}
+
 export function saveTask(data){
     return dispatch => {
         let url = "http://localhost:8000/api/v1/tasks/";
@@ -50,7 +56,7 @@ export function saveTask(data){
 
         return fetch(url, opciones)
                 .then(handleResponse)
-                .then(data => {console.log(data.task);dispatch(addTask(data.task))})
+                .then(data => dispatch(addTask(data.task)))
     }
 }
 
@@ -69,13 +75,31 @@ export function updateTask(id, data){
 
         return fetch(url, opciones)
                 .then(handleResponse)
-                .then(data => {console.log(data);dispatch(taskUpdated(data))})
+                .then(data => dispatch(taskUpdated(data)))
     }
 }
 
-export function fetchTasks(){
+export function deleteTask(taskId){
     return dispatch => {
-        let url = 'http://localhost:8000/api/v1/users/11/tasks/';
+        let url = 'http://localhost:8000/api/v1/tasks/'+taskId;
+        let opciones = {
+            credentials: 'include',
+            method: "DELETE",
+            headers: {
+            "content-type": "application/json"
+            }
+        };
+
+        return fetch(url, opciones)
+        .then(handleResponse)
+        .then(datos => dispatch(taskDeleted(taskId)))
+        .catch(error => console.log(error));
+    }
+}
+
+export function fetchTasks(userId){
+    return dispatch => {
+        let url = 'http://localhost:8000/api/v1/users/'+userId+'/tasks/';
         let opciones = {
             credentials: 'include',
             method: "GET",

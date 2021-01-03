@@ -1,3 +1,8 @@
+body{
+    /* background-color: red !important; */
+    background-color: #d7cedf !important;
+}
+
 .loader-container{
     display: flex;
     justify-content: center;

@@ -1,7 +1,4 @@
 .home-dashboard {
-    background-color:#fffdfb;
-    border-radius: 20px;
-    height: 100vh;
     overflow: auto;
 }
 
@@ -22,4 +19,16 @@
 .react-datepicker__input-container input {
   display: block;
   width: 100%;
+}
+
+.logout-icon{
+    margin-left: 0.5em;
+}
+
+.home-card {
+    min-height: 500px;
+}
+
+.task-container{
+    margin-top: 4em;
 }

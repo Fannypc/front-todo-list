@@ -4,47 +4,30 @@ import Button from 'react-bootstrap/Button';
 import {Route, Redirect, Link} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import './style.css';
+import { loginUser } from '../../redux/auth/actions';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 
 toast.configure();
-export default class Login extends React.Component{
-    constructor(props){
-        super(props);
+class Login extends React.Component{
+    constructor(){
+        super();
         this.state = {
             formData:{},
-            estatusPeticion:0
+            estatusPeticion: 0
         };
     }
 
     login = evento => {
-        evento.preventDefault();
-        // let url = 'http://localhost:8000/api/v1/users/2/tasks/';
-        let url = "http://localhost:8000/api/v1/login";
-        let opciones = {
-            method: "POST",
-            // useCredentials: true,
-            // withCredentials:true,
-            credentials: 'include',
-            headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
+        evento.preventDefault();        
+        this.props.loginUser(this.state.formData).then(
+            () => {
+                // toast.error('Error');
+                console.log('yes');
             },
-            body: JSON.stringify(this.state.formData)
-        };
-
-        fetch(url, opciones)
-        .then(respuesta => {
-            this.setState({estatusPeticion:respuesta.status});
-            return respuesta.json();
-        })
-        .then(datos => {
-            if(this.state.estatusPeticion!==200){
-                toast(datos.message);
-            }
-        })
-        .catch(error => {
-            console.log(error);
-        });
+            (err) => err.response.json().then(({errors}) => console.log(errors))
+        );
     };
 
     setInputValue = evento => {
@@ -57,8 +40,7 @@ export default class Login extends React.Component{
     };
 
     render(){
-        const {estatusPeticion} = this.state;
-        if (estatusPeticion===200){
+        if (this.props.user.isAuthenticated){
             return (<Route><Redirect to='/'/></Route>);
         }
 
@@ -105,3 +87,15 @@ export default class Login extends React.Component{
         );
     }
 }
+
+Login.propTypes = {
+    loginUser: PropTypes.func.isRequired
+}
+
+function mapStateToProps(state){
+    return{
+        user: state.user
+    }
+}
+
+export default connect(mapStateToProps, {loginUser})(Login);

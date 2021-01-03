@@ -1,25 +1,27 @@
 import React from 'react';
 import {
     Button, 
-    Container, 
     Row,
     Col,
-    Breadcrumb,
     Card,
     Form
 } from 'react-bootstrap';
 import Task from './task';
+import NavbarApp from './navbar';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import { registerLocale } from  "react-datepicker";
 import es from 'date-fns/locale/es';
+import {Route, Redirect, Link} from 'react-router-dom';
 import './style.css';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {toast} from 'react-toastify';
-// import store from './redux/store';
-import { fetchTasks, saveTask } from '../../redux/task/taskActions';
+import 'react-toastify/dist/ReactToastify.css';
+import { fetchTasks, saveTask, deleteTask } from '../../redux/task/taskActions';
+import { fetchStatus } from '../../redux/status/actions';
+import '../common/style.css';
 
 
 toast.configure();
@@ -36,66 +38,36 @@ class Home extends React.Component{
                 user_id: "11"
             }
         };
-        this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount(){
-        this.props.fetchTasks();
-        this.status();
+        this.props.fetchTasks(this.props.user.id);
+        this.props.fetchStatus();
     }
 
-    status = () => {
-        let url = 'http://localhost:8000/api/v1/status/';
-        let opciones = {
-            credentials: 'include',
-            method: "GET",
-            headers: {
-            "content-type": "application/json"
-            }
-        };
-
-        fetch(url, opciones)
-        .then(respuesta => {
-            this.setState({estatusPeticion:respuesta.ok});
-            return respuesta.json();
-        })
-        .then(datos => {
-            if(this.state.estatusPeticion){
-                this.setState({status:datos});
-            }
-        })
-        .catch(error => {
-            console.log(error);
-        });
-    };
-
-    deleteTask= (id)=>{
-        let url = 'http://localhost:8000/api/v1/tasks/'+id;
-        let opciones = {
-            credentials: 'include',
-            method: "DELETE",
-            headers: {
-            "content-type": "application/json"
-            }
-        };
-
-        fetch(url, opciones)
-        .then(respuesta => {
-            this.setState({estatusPeticion:respuesta.ok});
-            return respuesta.json();
-        })
-        .then(datos => {
-            if(this.state.estatusPeticion){
-                this.tasks();
-            }
-        })
-        .catch(error => {
-            console.log(error);
-        });
-        
+    createTask= event =>{
+        event.preventDefault();  
+        this.props.saveTask(this.state.formData).then(
+            () => {
+                toast.success('Tarea creada con exito');
+                this.resetCreateForm();
+                this.props.fetchTasks();
+            },
+            (err) => err.response.json().then(({errors}) => console.log(errors))
+        );
     }
 
-    handleChange(date) {
+    deleteTask = (id)=>{
+        this.props.deleteTask(id).then(
+            () => {
+                toast.success('Tarea eliminada con exito');
+                this.props.fetchTasks();
+            },
+            (err) => err.response.json().then(({errors}) => console.log(errors))
+        );
+    }
+
+    handleDatepicker = (date) => {
         this.setState({
             formData: {
             ...this.state.formData,
@@ -113,87 +85,69 @@ class Home extends React.Component{
         });
     };
 
-    createTask= event =>{
-        event.preventDefault();
-        
-        this.props.saveTask(this.state.formData).then(
-            () => {
-                toast.success('Tarea creada con exito');
-                this.resetCreateForm();
-                this.props.fetchTasks();
-            },
-            (err) => err.response.json().then(({errors}) => console.log(errors))
-        );
-    }
-
     resetCreateForm = () => { 
         document.getElementById("create-task-form").reset();
     }
 
-
     render(){
+        // if (this.props.user.isAuthenticated){
+        //     return (<Route><Redirect to='/'/></Route>);
+        // }
+
         return(
-            <Container>
-                <Row className="justify-content-md-center home-dashboard">
-                    <Col lg="10">
-                        <Breadcrumb>
-                            <Breadcrumb.Item href="#">Tareas</Breadcrumb.Item>
-                            <Breadcrumb.Item href="https://getbootstrap.com/docs/4.0/components/breadcrumb/">
-                                Calendario
-                            </Breadcrumb.Item>
-                        </Breadcrumb>
-                        <Card body>
-                        <Form onInput={this.setInputValue} onSubmit={this.createTask} id='create-task-form'>
-                            <Form.Row>
-                                <Col xs={6}>
-                                    <Form.Control placeholder="City" name="content" />
-                                </Col>
-                                <Col xs={2}>
-                                    {/* <Form.Control placeholder="State" /> */}
-                                        <DatePicker 
-                                            selected={this.state.formData.due_date} 
-                                            onChange={this.handleChange}
-                                            name="due_date"
-                                            disabled={false}
-                                            locale="es"
-                                            // dateFormat="MM/dd/yyyy"
-                                        />
-                                </Col>
-                                <Col xs={2}>
-                                    <Form.Control as="select" custom name="status_id">
-                                        <option value="" disabled hidden>Seleccionar</option>
-                                        {this.state.status.map((status)=>(
-                                            <option value={status.id} key={status.id}>
-                                                {status.name}
-                                            </option>
-                                        ))}
-                                        
-                                    </Form.Control>
-                                </Col>
-                                <Col xs={1}>
-                                    <Button type="submit" className="mb-2">
-                                        Submit
-                                    </Button>
-                                </Col>
-                            </Form.Row>
-                        </Form>
-                            <div className="">
-                                { this.props.tasks.length === 0                          
-                                   ? <p>Aun no tienes tareas.</p>
-                                    : this.props.tasks.map((task)=>(
-                                        <Task 
-                                            task={task}
-                                            key={task.id}
-                                            status={this.state.status}
-                                            deleteTaskFn={this.deleteTask}
-                                            tasksFn = {this.tasks}/>
-                                    ))
-                                }
-                            </div>
-                        </Card>
-                    </Col>
-                </Row>
-            </Container>
+            <>
+            <NavbarApp user={this.props.user}/>
+            <Row className="justify-content-md-center home-dashboard m-0">
+                <Col lg="10">
+                    <Card body className='home-card'>
+                    <Form onInput={this.setInputValue} onSubmit={this.createTask} id='create-task-form'>
+                        <Form.Row>
+                            <Col sm={7} xs={12}>
+                                <Form.Control placeholder="City" name="content" />
+                            </Col>
+                            <Col sm={2} xs={4}>
+                                    <DatePicker 
+                                        selected={this.state.formData.due_date} 
+                                        onChange={this.handleDatepicker}
+                                        name="due_date"
+                                        disabled={false}
+                                        locale="es"
+                                    />
+                            </Col>
+                            <Col sm={2} xs={5}>
+                                <Form.Control as="select" custom name="status_id">
+                                    <option value="" disabled hidden>Seleccionar</option>
+                                    {this.props.status.map((status)=>(
+                                        <option value={status.id} key={status.id}>
+                                            {status.name}
+                                        </option>
+                                    ))}
+                                    
+                                </Form.Control>
+                            </Col>
+                            <Col sm={1} xs={3}>
+                                <Button type="submit" className="mb-2">
+                                    Submit
+                                </Button>
+                            </Col>
+                        </Form.Row>
+                    </Form>
+                        <div className="task-container">
+                            { this.props.tasks.length === 0                          
+                            ? <p>Aun no tienes tareas.</p>
+                                : this.props.tasks.map((task)=>(
+                                    <Task 
+                                        task={task}
+                                        key={task.id}
+                                        status={this.props.status}
+                                        deleteTaskFn={this.deleteTask}/>
+                                ))
+                            }
+                        </div>
+                    </Card>
+                </Col>
+            </Row>
+            </>
         )
 
     }
@@ -201,13 +155,17 @@ class Home extends React.Component{
 
 Home.propTypes = {
     tasks: PropTypes.array.isRequired,
-    getTasks: PropTypes.func.isRequired
+    status: PropTypes.array.isRequired,
+    fetchTasks: PropTypes.func.isRequired,
+    deleteTask: PropTypes.func.isRequired
 }
 
 function mapStateToProps(state){
     return{
-        tasks: state.tasks
+        tasks: state.tasks,
+        status: state.status,
+        user: state.user
     }
 }
 
-export default connect(mapStateToProps, {fetchTasks, saveTask})(Home);
+export default connect(mapStateToProps, {fetchTasks, saveTask, fetchStatus, deleteTask})(Home);

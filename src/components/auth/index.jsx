@@ -1,5 +1,4 @@
 import React from 'react';
-import useHistory from 'react';
 import './style.css';
 import Login from './login';
 import Register from './register';
@@ -7,12 +6,6 @@ import Loader from '../common/loader';
 import Home from '../home/index';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link
-  } from "react-router-dom";
 
 
 toast.configure();
