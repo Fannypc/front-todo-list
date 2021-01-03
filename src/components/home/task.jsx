@@ -7,13 +7,17 @@ import {
 } from 'react-bootstrap';
 import { ArrowRight, Trash, PencilSquare } from 'react-bootstrap-icons';
 import DatePicker from 'react-datepicker';
+import { registerLocale } from  "react-datepicker";
+import es from 'date-fns/locale/es';
 import {toast} from 'react-toastify';
 import '../common/style.css';
-
+import { connect } from 'react-redux';
+import { updateTask } from '../../redux/task/taskActions';
 
 
 toast.configure();
-export default class Task extends React.Component{
+registerLocale('es', es);
+class Task extends React.Component{
 
     constructor(props){
         super(props);
@@ -31,45 +35,23 @@ export default class Task extends React.Component{
     }
 
     componentDidMount(){
-        // const datepickers=document.querySelectorAll('input[name="due_date"]');
         const datepickers=document.getElementsByClassName('datepicker');
         for (var i=0; i<datepickers.length; i++){
             datepickers[i].setAttribute('disabled', 'true');
-            // console.log(datepickers[i]);
         }
-        console.log(this.props.task.status);
     }
 
     editTask = (evento, id) =>{
         evento.preventDefault();
         this.disable(evento);
 
-        let url = "http://localhost:8000/api/v1/tasks/"+id;
-        let opciones = {
-            method: "PUT",
-            credentials: 'include',
-            headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-            },
-            body: JSON.stringify(this.state.formData)
-        };
-    
-        fetch(url, opciones)
-        .then(respuesta => {
-            this.setState({estatusPeticion:respuesta.status});
-            return respuesta.json();
-        })
-        .then(datos => {
-            if(this.state.estatusPeticion){
+        this.props.updateTask(id, this.state.formData).then(
+            () => {
                 toast.success('Tarea editada con exito');
-                this.props.tasksFn();
-                this.componentDidMount();
-            }
-        })
-        .catch(error => {
-            console.log(error);
-        });
+                // this.props.fetchTasks();
+            },
+            (err) => {console.log('error:');console.log(err);err.response.json().then(({errors}) => console.log(errors))}
+        );
     }
 
     setInputValue = evento => {
@@ -123,6 +105,7 @@ export default class Task extends React.Component{
                                 onChange={this.handleChange}
                                 name="due_date"
                                 className='datepicker'
+                                locale="es"
                             />
                         </Col>
                         <Col xs={2}>
@@ -134,7 +117,9 @@ export default class Task extends React.Component{
                                 value={this.state.formData.status_id}
                                 onChange={this.setInputValue}>
                                 {this.props.status.map((status)=>(
-                                    <option value={status.id}>{status.name}</option>
+                                    <option value={status.id} key={status.id}>
+                                        {status.name}
+                                    </option>
                                 ))}
                             </Form.Control>
                         </Col>
@@ -144,10 +129,10 @@ export default class Task extends React.Component{
                             </Button>
                         </Col>
                         <Col xs={1} className="justify-center">
-                            <Button type="button" className="mb-2" variant="danger" onClick={() => this.props.deleteTaskFn(this.props.task.id)}>
+                            <Button type="button" className="mb-2 d-none" variant="danger" onClick={() => this.props.deleteTaskFn(this.props.task.id)}>
                                 <Trash/>
                             </Button>
-                            <Button type="submit" className="mb-2 d-none">
+                            <Button type="submit" className="mb-2">
                                 Editar
                             </Button>
                         </Col>
@@ -159,3 +144,5 @@ export default class Task extends React.Component{
         }
     }
 }
+
+export default connect(null, {updateTask})(Task);

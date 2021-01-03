@@ -12,11 +12,18 @@ import Task from './task';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
+import { registerLocale } from  "react-datepicker";
+import es from 'date-fns/locale/es';
 import './style.css';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { fetchTasks } from '../../redux/task/taskActions';
+import {toast} from 'react-toastify';
+// import store from './redux/store';
+import { fetchTasks, saveTask } from '../../redux/task/taskActions';
 
+
+toast.configure();
+registerLocale('es', es);
 class Home extends React.Component{
     constructor(){
         super();
@@ -32,48 +39,10 @@ class Home extends React.Component{
         this.handleChange = this.handleChange.bind(this);
     }
 
-    resetForm = () => {
-        // this.setState({
-        //     formData:{
-        //         content:'',
-        //         due_date: new Date(),
-        //         user_id: "11"
-        //     }
-        // });
-        document.getElementById("create-course-form").reset();
-    }
-
     componentDidMount(){
         this.props.fetchTasks();
         this.status();
     }
-
-    tasks = () => {
-        let url = 'http://localhost:8000/api/v1/users/11/tasks/';
-        // let url = "http://localhost:8000/api/v1/users/1/tasks";
-        let opciones = {
-            credentials: 'include',
-            // withCredentials: true,
-            method: "GET",
-            headers: {
-            "content-type": "application/json"
-            }
-        };
-
-        fetch(url, opciones)
-        .then(respuesta => {
-            this.setState({estatusPeticion:respuesta.ok});
-            return respuesta.json();
-        })
-        .then(datos => {
-            if(this.state.estatusPeticion){
-                this.setState({tasks:datos.user.tasks});
-            }
-        })
-        .catch(error => {
-            console.log(error);
-        });
-    };
 
     status = () => {
         let url = 'http://localhost:8000/api/v1/status/';
@@ -127,16 +96,12 @@ class Home extends React.Component{
     }
 
     handleChange(date) {
-        // this.setState({
-        //   startDate: date
-        // })
         this.setState({
             formData: {
             ...this.state.formData,
             due_date: date
             }
         });
-        console.log(this.state.formData);
     }
 
     setInputValue = evento => {
@@ -146,38 +111,19 @@ class Home extends React.Component{
             [evento.target.name]: evento.target.value
             }
         });
-        console.log(this.state.formData);
     };
 
-    createTask= evento =>{
-        evento.preventDefault();
+    createTask= event =>{
+        event.preventDefault();
         
-        // let url = 'http://localhost:8000/api/v1/users/2/tasks/';
-        let url = "http://localhost:8000/api/v1/tasks/";
-        let opciones = {
-            method: "POST",
-            credentials: 'include',
-            headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-            },
-            body: JSON.stringify(this.state.formData)
-        };
-
-        fetch(url, opciones)
-        .then(respuesta => {
-            this.setState({estatusPeticion:respuesta.status});
-            return respuesta.json();
-        })
-        .then(datos => {
-            if(this.state.estatusPeticion){
+        this.props.saveTask(this.state.formData).then(
+            () => {
+                toast.success('Tarea creada con exito');
                 this.resetCreateForm();
-                this.tasks();
-            }
-        })
-        .catch(error => {
-            console.log(error);
-        });
+                this.props.fetchTasks();
+            },
+            (err) => err.response.json().then(({errors}) => console.log(errors))
+        );
     }
 
     resetCreateForm = () => { 
@@ -209,14 +155,17 @@ class Home extends React.Component{
                                             onChange={this.handleChange}
                                             name="due_date"
                                             disabled={false}
+                                            locale="es"
                                             // dateFormat="MM/dd/yyyy"
                                         />
                                 </Col>
                                 <Col xs={2}>
                                     <Form.Control as="select" custom name="status_id">
-                                        <option value="" selected disabled hidden>Seleccionar</option>
+                                        <option value="" disabled hidden>Seleccionar</option>
                                         {this.state.status.map((status)=>(
-                                            <option value={status.id}>{status.name}</option>
+                                            <option value={status.id} key={status.id}>
+                                                {status.name}
+                                            </option>
                                         ))}
                                         
                                     </Form.Control>
@@ -229,15 +178,16 @@ class Home extends React.Component{
                             </Form.Row>
                         </Form>
                             <div className="">
-                                { this.state.tasks.length                           
-                                   ? this.state.tasks.map((task)=>(
+                                { this.props.tasks.length === 0                          
+                                   ? <p>Aun no tienes tareas.</p>
+                                    : this.props.tasks.map((task)=>(
                                         <Task 
                                             task={task}
+                                            key={task.id}
                                             status={this.state.status}
                                             deleteTaskFn={this.deleteTask}
                                             tasksFn = {this.tasks}/>
                                     ))
-                                    :<p>Aun no tienes tareas.</p>
                                 }
                             </div>
                         </Card>
@@ -260,4 +210,4 @@ function mapStateToProps(state){
     }
 }
 
-export default connect(mapStateToProps, {fetchTasks})(Home);
+export default connect(mapStateToProps, {fetchTasks, saveTask})(Home);
