@@ -44,22 +44,21 @@ export function loginUser(data){
     }
 }
 
-// export function logout(data){
-//     return dispatch => {
-//         let url = "http://localhost:8000/api/v1/logout";
-//         let opciones = {
-//             method: "POST",
-//             credentials: 'include',
-//             headers: {
-//                 "Content-Type": "application/json",
-//                 "Accept": "application/json"
-//             },
-//             body: JSON.stringify(data)
-//         };
+export function logout(){
+    return dispatch => {
+        let url = "http://localhost:8000/api/v1/logout";
+        let opciones = {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+        };
 
-//         return fetch(url, opciones)
-//         .then(handleResponse)
-//         .then(datos => dispatch(doLogout()))
-//         .catch(error => console.log('el error es'+error))
-//     }
-// }
+        return fetch(url, opciones)
+        .then(handleResponse)
+        .then(datos => dispatch(doLogout()))
+        .catch(error => console.log('el error es'+error))
+    }
+}

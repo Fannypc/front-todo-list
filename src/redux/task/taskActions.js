@@ -5,8 +5,10 @@ export const TASK_DELETED = 'TASK_DELETED';
 
 function handleResponse(response){
     if(response.ok){
+        console.log('estoy en el ok');
         return response.json();
     }else{
+        console.log('estoy en el error');
         let error = new Error(response.statusText);
         error.response = response;
         throw error;

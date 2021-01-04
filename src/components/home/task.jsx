@@ -25,7 +25,7 @@ class Task extends React.Component{
             tasks:[],
             estatusPeticion:false,
             formData:{
-                user_id: "11",
+                user_id: this.props.user.id,
                 due_date: Date.parse(this.props.task.due_date),
                 status_id: this.props.task.status.id
             }

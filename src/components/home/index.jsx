@@ -13,13 +13,13 @@ import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import { registerLocale } from  "react-datepicker";
 import es from 'date-fns/locale/es';
-import {Route, Redirect, Link} from 'react-router-dom';
 import './style.css';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { fetchTasks, saveTask, deleteTask } from '../../redux/task/taskActions';
+import { logout } from '../../redux/auth/actions';
 import { fetchStatus } from '../../redux/status/actions';
 import '../common/style.css';
 
@@ -27,22 +27,45 @@ import '../common/style.css';
 toast.configure();
 registerLocale('es', es);
 class Home extends React.Component{
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = {
             tasks: [],
             status: [],
             estatusPeticion: false,
             formData: {
                 due_date: new Date(),
-                user_id: "11"
+                user_id: this.props.user.id
             }
         };
     }
 
     componentDidMount(){
-        this.props.fetchTasks(this.props.user.id);
-        this.props.fetchStatus();
+        console.log('en el componentdidmount');
+        console.log(this.props.user);
+        console.log(typeof(this.props.user));
+        console.log(this.props.user.length);
+        console.log('el length:');
+        console.log(Object.keys(this.props.user).length);
+        console.log(Object.keys(this.props.user).length === 0 && this.props.user.constructor === Object);
+        if(Object.keys(this.props.user).length > 0){
+            console.log('si');
+        }
+        // if(Object.keys(this.props.user).length > 0){
+        if(this.props.user.isAuthenticated){
+            console.log('si esta el estate en did mount');
+            this.props.fetchTasks(this.props.user.id);
+            this.props.fetchStatus();
+        }
+    }
+
+    componentDidUpdate(){
+        console.log('en el componentdidupdate');
+        if(this.props.user.length > 0){
+            console.log('si esta el estate en el did update');
+            this.props.fetchTasks(this.props.user.id);
+            this.props.fetchStatus();
+        }
     }
 
     createTask= event =>{
@@ -62,6 +85,16 @@ class Home extends React.Component{
             () => {
                 toast.success('Tarea eliminada con exito');
                 this.props.fetchTasks();
+            },
+            (err) => err.response.json().then(({errors}) => console.log(errors))
+        );
+    }
+
+    userLogout = () => {
+        this.props.logout().then(
+            () => {
+                console.log('yes');
+                this.props.history.push('/login');
             },
             (err) => err.response.json().then(({errors}) => console.log(errors))
         );
@@ -90,13 +123,9 @@ class Home extends React.Component{
     }
 
     render(){
-        // if (this.props.user.isAuthenticated){
-        //     return (<Route><Redirect to='/'/></Route>);
-        // }
-
         return(
             <>
-            <NavbarApp user={this.props.user}/>
+            <NavbarApp user={this.props.user} logoutFn={this.userLogout}/>
             <Row className="justify-content-md-center home-dashboard m-0">
                 <Col lg="10">
                     <Card body className='home-card'>
@@ -117,11 +146,11 @@ class Home extends React.Component{
                             <Col sm={2} xs={5}>
                                 <Form.Control as="select" custom name="status_id">
                                     <option value="" disabled hidden>Seleccionar</option>
-                                    {this.props.status.map((status)=>(
+                                    {this.props.status ? this.props.status.map((status)=>(
                                         <option value={status.id} key={status.id}>
                                             {status.name}
                                         </option>
-                                    ))}
+                                    )): <p></p>}
                                     
                                 </Form.Control>
                             </Col>
@@ -133,12 +162,13 @@ class Home extends React.Component{
                         </Form.Row>
                     </Form>
                         <div className="task-container">
-                            { this.props.tasks.length === 0                          
+                            { this.props.tasks && this.props.tasks.length === 0                          
                             ? <p>Aun no tienes tareas.</p>
                                 : this.props.tasks.map((task)=>(
                                     <Task 
                                         task={task}
                                         key={task.id}
+                                        user={this.props.user}
                                         status={this.props.status}
                                         deleteTaskFn={this.deleteTask}/>
                                 ))
@@ -157,7 +187,8 @@ Home.propTypes = {
     tasks: PropTypes.array.isRequired,
     status: PropTypes.array.isRequired,
     fetchTasks: PropTypes.func.isRequired,
-    deleteTask: PropTypes.func.isRequired
+    deleteTask: PropTypes.func.isRequired,
+    logout: PropTypes.func.isRequired
 }
 
 function mapStateToProps(state){
@@ -168,4 +199,4 @@ function mapStateToProps(state){
     }
 }
 
-export default connect(mapStateToProps, {fetchTasks, saveTask, fetchStatus, deleteTask})(Home);
+export default connect(mapStateToProps, {fetchTasks, saveTask, fetchStatus, deleteTask, logout})(Home);

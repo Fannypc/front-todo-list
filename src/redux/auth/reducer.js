@@ -5,7 +5,9 @@ export default function user(state=[], action={}){
         case SET_USER:
             return {...action.user, isAuthenticated: true};
         case DO_LOGOUT:
-            return state=[{isAuthenticated: false}]
+            window.localStorage.clear();
+            // return state={...action.user, isAuthenticated: false};
+            return state=[];
         default: return state;
     }
 }

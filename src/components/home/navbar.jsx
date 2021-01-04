@@ -22,7 +22,7 @@ export default class NavbarApp extends React.Component{
                         </a>
                     </Navbar.Text>
                     {/* <Button type="button" className="mb-2 d-none" variant="danger"> */}
-                    <Navbar.Text className="logout-icon">
+                    <Navbar.Text className="logout-icon" title="Cerrar sesión" onClick={this.props.logoutFn}>
                         <BoxArrowInRight/>
                     </Navbar.Text>
                     {/* </Button> */}
