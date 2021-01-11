@@ -82,14 +82,14 @@ class Task extends React.Component{
             el.tagName === 'BUTTON'
         ));
 
-        for (var i = 0, l = buttons.length; i < l; ++i) {
+        for (var i = 0; i < buttons.length; ++i) {
             buttons[i].classList.toggle('d-none');
         }
 
         allElements = allElements.filter(el => (
             el.tagName !== 'BUTTON' 
         ));
-        for (var i = 0, l = allElements.length; i < l; ++i) {
+        for (var j = 0; j < allElements.length; ++j) {
             allElements[i].disabled=!allElements[i].disabled;
         }
     }
