@@ -47,6 +47,15 @@ class Home extends React.Component{
     componentDidMount(){
         if(this.props.user.isAuthenticated){
             this.props.fetchTasks(this.props.user.id);
+            // try{
+            //     this.props.fetchTasks(this.props.user.id);
+            // }catch(errors){
+            //     this.setState({errors});
+            //     console.log(this.state.errors);
+            // }
+
+            // this.props.fetchTasks(this.props.user.id)
+            // .then(()=>{},(err)=>{err.response.json().then(({errors})=>{this.setState({errors})})});
             this.props.fetchStatus();
         }
     }
@@ -136,7 +145,7 @@ class Home extends React.Component{
                     <Card body className='home-card'>
                     <Form onInput={this.setInputValue} onSubmit={this.createTask} id='create-task-form'>
                         <Form.Row>
-                            <Col sm={12} xs={12} md={12} xl={7} className={classnames('error', {error: !!this.state.content})}>
+                            <Col sm={12} xs={12} md={12} xl={7} className={classnames({error: !!this.state.content})}>
                                 <Form.Control placeholder="Ingresa tu tarea" name="content" />
                                 <span>{this.state.errors.content}</span>
                             </Col>
@@ -149,7 +158,7 @@ class Home extends React.Component{
                                         locale="es"
                                     />
                             </Col>
-                            <Col sm={5} xs={4} md={5} xl={2} className={"mt-2 mt-xl-0 "+classnames('error', {error: !!this.state.status_id})}>
+                            <Col sm={5} xs={4} md={5} xl={2} className={"mt-2 mt-xl-0 "+classnames({error: !!this.state.status_id})}>
                                 <Form.Control as="select" custom name="status_id">
                                     <option value="" hidden>Seleccionar</option>
                                     {this.props.status ? this.props.status.map((status)=>(
@@ -162,7 +171,7 @@ class Home extends React.Component{
                             </Col>
                             <Col sm={3} xs={4} md={2} xl={1} className="mt-2 mt-xl-0">
                                 <Button type="submit" className="mb-2">
-                                    Submit
+                                    Crear
                                 </Button>
                             </Col>
                         </Form.Row>

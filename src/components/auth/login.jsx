@@ -70,23 +70,23 @@ class Login extends React.Component{
                                     <div className="row vh-75">
                                         <div className="col-md-6 justify-content-center align-items-center d-flex">
                                             <div className="p-3">
-                                                <div>LOGIN</div>
+                                                <div>INICIAR SESION</div>
                                                 <Form onInput={this.setInputValue} onSubmit={this.login} id="login-form">
-                                                    <Form.Group controlId="formBasicEmail" className={classnames('error', {error: !!this.state.email})}>
-                                                        <Form.Label>Email address</Form.Label>
-                                                        <Form.Control type="email" name="email" placeholder="Enter email" />
+                                                    <Form.Group controlId="formBasicEmail" className={classnames({error: !!this.state.email})}>
+                                                        <Form.Label>Correo:</Form.Label>
+                                                        <Form.Control type="email" name="email" placeholder="Ingresa correo" />
                                                         <span>{this.state.errors.email}</span>
                                                     </Form.Group>
-                                                    <Form.Group controlId="formBasicPassword" className={classnames('error', {error: !!this.state.password})}>
-                                                        <Form.Label>Password</Form.Label>
-                                                        <Form.Control type="password" name="password" placeholder="Password" />
+                                                    <Form.Group controlId="formBasicPassword" className={classnames({error: !!this.state.password})}>
+                                                        <Form.Label>Contraseña</Form.Label>
+                                                        <Form.Control type="password" name="password" placeholder="Contraseña" />
                                                         <span>{this.state.errors.password}</span>
                                                     </Form.Group>
                                                     <Button variant="primary" type="submit">
-                                                        Submit
+                                                        Ingresar
                                                     </Button>
                                                     <div>
-                                                        ¿No tienes una cuenta? 
+                                                        <span>¿No tienes una cuenta? </span> 
                                                             <Link className="underlined c-pointer" to="/register">
                                                                 Registrarse
                                                             </Link>

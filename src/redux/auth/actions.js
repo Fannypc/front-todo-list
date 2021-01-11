@@ -62,6 +62,5 @@ export function logout(){
         return fetch(url, opciones)
         .then(handleResponse)
         .then(data => dispatch(doLogout()))
-        .catch(error => console.log('el error es'+error))
     }
 }

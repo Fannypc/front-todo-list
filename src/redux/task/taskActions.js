@@ -45,13 +45,15 @@ export function taskDeleted(taskId){
 
 export function saveTask(data){
     return dispatch => {
-        let url = "http://localhost:8000/api/v1/tasks/";
+        let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/tasks';
+        // let url = "http://localhost:8000/api/v1/tasks/";
         let opciones = {
             method: "POST",
-            credentials: 'include',
+            // credentials: 'include',
             headers: {
                 "Content-Type": "application/json",
-                "Accept": "application/json"
+                "Accept": "application/json",
+                'Authorization': 'Bearer '+localStorage.getItem('token'),
             },
             body: JSON.stringify(data)
         };
@@ -64,7 +66,8 @@ export function saveTask(data){
 
 export function updateTask(id, data){
     return dispatch => {
-        let url = "http://localhost:8000/api/v1/tasks/"+id;
+        let url = "https://vast-thicket-80304.herokuapp.com/api/v1/tasks"+id;
+        // let url = "http://localhost:8000/api/v1/tasks/"+id;
         let opciones = {
             method: "PUT",
             credentials: 'include',
@@ -83,7 +86,8 @@ export function updateTask(id, data){
 
 export function deleteTask(taskId){
     return dispatch => {
-        let url = 'http://localhost:8000/api/v1/tasks/'+taskId;
+        let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/tasks'+taskId;
+        // let url = 'http://localhost:8000/api/v1/tasks/'+taskId;
         let opciones = {
             credentials: 'include',
             method: "DELETE",
@@ -114,7 +118,8 @@ export function fetchTasks(userId){
 
         fetch(url, opciones)
         .then(respuesta => respuesta.json())
+        // .then(handleResponse)
         .then(data => dispatch(setTasks(data.user.tasks)))
-        .catch(error => console.log(error));
+        // .catch(error => console.log(error));
     }
 }
