@@ -12,16 +12,17 @@ export function fetchStatus(){
         let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/status';
         // let url = 'http://localhost:8000/api/v1/status/';
         let opciones = {
-            credentials: 'include',
+            // credentials: 'include',
             method: "GET",
             headers: {
-            "content-type": "application/json"
+                "content-type": "application/json",
+                'Authorization': 'Bearer '+localStorage.getItem('token'), 
             }
         };
 
         fetch(url, opciones)
         .then(respuesta => respuesta.json())
-        .then(datos => dispatch(setStatus(datos)))
+        .then(data => dispatch(setStatus(data)))
         .catch(error => console.log(error))
     }
 }

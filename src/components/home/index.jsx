@@ -7,7 +7,7 @@ import {
     Form
 } from 'react-bootstrap';
 import Task from './task';
-import NavbarApp from './navbar';
+import NavbarApp from '../common/navbar';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
