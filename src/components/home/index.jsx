@@ -57,7 +57,7 @@ class Home extends React.Component{
         if (this.state.formData.content === '') errors.content = "Informar campo"
         if (this.state.formData.status_id === '') errors.status_id = "Informar campo"
         this.setState({errors});
-        const isValid = Object.keys(errors).length === 0
+        // const isValid = Object.keys(errors).length === 0
 
         if (true){
             this.props.saveTask(this.state.formData).then(
