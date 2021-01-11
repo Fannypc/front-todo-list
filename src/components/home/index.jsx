@@ -21,6 +21,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { fetchTasks, saveTask, deleteTask } from '../../redux/task/taskActions';
 import { logout } from '../../redux/auth/actions';
 import { fetchStatus } from '../../redux/status/actions';
+import classnames from 'classnames';
 import '../common/style.css';
 
 
@@ -34,35 +35,17 @@ class Home extends React.Component{
             status: [],
             estatusPeticion: false,
             formData: {
+                content: '',
                 due_date: new Date(),
-                user_id: this.props.user.id
-            }
+                user_id: this.props.user.id,
+                status_id: ''
+            },
+            errors: {}
         };
     }
 
     componentDidMount(){
-        console.log('en el componentdidmount');
-        console.log(this.props.user);
-        console.log(typeof(this.props.user));
-        console.log(this.props.user.length);
-        console.log('el length:');
-        console.log(Object.keys(this.props.user).length);
-        console.log(Object.keys(this.props.user).length === 0 && this.props.user.constructor === Object);
-        if(Object.keys(this.props.user).length > 0){
-            console.log('si');
-        }
-        // if(Object.keys(this.props.user).length > 0){
         if(this.props.user.isAuthenticated){
-            console.log('si esta el estate en did mount');
-            this.props.fetchTasks(this.props.user.id);
-            this.props.fetchStatus();
-        }
-    }
-
-    componentDidUpdate(){
-        console.log('en el componentdidupdate');
-        if(this.props.user.length > 0){
-            console.log('si esta el estate en el did update');
             this.props.fetchTasks(this.props.user.id);
             this.props.fetchStatus();
         }
@@ -70,14 +53,23 @@ class Home extends React.Component{
 
     createTask= event =>{
         event.preventDefault();  
-        this.props.saveTask(this.state.formData).then(
-            () => {
-                toast.success('Tarea creada con exito');
-                this.resetCreateForm();
-                this.props.fetchTasks();
-            },
-            (err) => err.response.json().then(({errors}) => console.log(errors))
-        );
+        let errors={};
+        if (this.state.formData.content === '') errors.content = "Informar campo"
+        if (this.state.formData.status_id === '') errors.status_id = "Informar campo"
+        this.setState({errors});
+        const isValid = Object.keys(errors).length === 0
+
+        if (true){
+            this.props.saveTask(this.state.formData).then(
+                () => {
+                    toast.success('Tarea creada con exito');
+                    this.resetCreateForm();
+                    this.props.fetchTasks();
+                },
+                (err) => err.response.json().then(({errors}) => this.setState({errors}))
+            );
+        }
+
     }
 
     deleteTask = (id)=>{
@@ -103,19 +95,33 @@ class Home extends React.Component{
     handleDatepicker = (date) => {
         this.setState({
             formData: {
-            ...this.state.formData,
-            due_date: date
+                ...this.state.formData,
+                due_date: date
             }
         });
     }
 
     setInputValue = evento => {
-        this.setState({
-            formData: {
-            ...this.state.formData,
-            [evento.target.name]: evento.target.value
-            }
-        });
+        if(!!this.state.errors[evento.target.name]){
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[evento.target.name];
+    
+            this.setState({
+                formData: {
+                    ...this.state.formData,
+                    [evento.target.name]: evento.target.value
+                },
+                errors
+            });
+        }else{
+            this.setState({
+                formData: {
+                    ...this.state.formData,
+                    [evento.target.name]: evento.target.value
+                }
+            });
+        }
+
     };
 
     resetCreateForm = () => { 
@@ -131,10 +137,11 @@ class Home extends React.Component{
                     <Card body className='home-card'>
                     <Form onInput={this.setInputValue} onSubmit={this.createTask} id='create-task-form'>
                         <Form.Row>
-                            <Col sm={7} xs={12}>
-                                <Form.Control placeholder="City" name="content" />
+                            <Col sm={12} xs={12} md={12} xl={7} className={classnames('error', {error: !!this.state.content})}>
+                                <Form.Control placeholder="Ingresa tu tarea" name="content" />
+                                <span>{this.state.errors.content}</span>
                             </Col>
-                            <Col sm={2} xs={4}>
+                            <Col sm={4} xs={4} md={5} xl={2} className="mt-2 mt-xl-0">
                                     <DatePicker 
                                         selected={this.state.formData.due_date} 
                                         onChange={this.handleDatepicker}
@@ -143,18 +150,18 @@ class Home extends React.Component{
                                         locale="es"
                                     />
                             </Col>
-                            <Col sm={2} xs={5}>
+                            <Col sm={5} xs={5} md={5} xl={2} className={"mt-2 mt-xl-0 "+classnames('error', {error: !!this.state.status_id})}>
                                 <Form.Control as="select" custom name="status_id">
-                                    <option value="" disabled hidden>Seleccionar</option>
+                                    <option value="" hidden>Seleccionar</option>
                                     {this.props.status ? this.props.status.map((status)=>(
                                         <option value={status.id} key={status.id}>
                                             {status.name}
                                         </option>
                                     )): <p></p>}
-                                    
                                 </Form.Control>
+                                <span>{this.state.errors.status_id}</span>
                             </Col>
-                            <Col sm={1} xs={3}>
+                            <Col sm={3} xs={3} md={2} xl={1} className="mt-2 mt-xl-0">
                                 <Button type="submit" className="mb-2">
                                     Submit
                                 </Button>

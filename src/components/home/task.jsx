@@ -2,7 +2,8 @@ import React from 'react';
 import {
     Form, 
     Col, 
-    Button
+    Button,
+    Card
 } from 'react-bootstrap';
 import { Trash, PencilSquare, Check, X } from 'react-bootstrap-icons';
 import DatePicker from 'react-datepicker';
@@ -10,6 +11,7 @@ import { registerLocale } from  "react-datepicker";
 import es from 'date-fns/locale/es';
 import {toast} from 'react-toastify';
 import '../common/style.css';
+import './style.css';
 import { connect } from 'react-redux';
 import { fetchTasks, updateTask } from '../../redux/task/taskActions';
 
@@ -81,7 +83,6 @@ class Task extends React.Component{
         ));
 
         for (var i = 0, l = buttons.length; i < l; ++i) {
-            // buttons[i].disabled=!buttons[i].disabled;
             buttons[i].classList.toggle('d-none');
         }
 
@@ -97,13 +98,13 @@ class Task extends React.Component{
     render(){
         if(this.props.task.id){
             return(
-                <>
-                <Form className="home-task" onInput={this.setInputValue} onSubmit={(e)=> this.editTask(e, this.props.task.id)}>
-                    <Form.Row>
-                        <Col xs={6}>
+                <Card body className="task-card mb-1">
+                <Form className="home-task m-0" onInput={this.setInputValue} onSubmit={(e)=> this.editTask(e, this.props.task.id)}>
+                    <Form.Row className="task-form">
+                        <Col xs={12} md={6}>
                             <Form.Control type="text" placeholder="Normal text" name="content" defaultValue={this.props.task.content} disabled={true}/>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={4} md={2} className="mt-2 mt-md-0">
                             <DatePicker
                                 selected = {this.state.formData.due_date} 
                                 onChange={this.handleDatepicker}
@@ -112,7 +113,7 @@ class Task extends React.Component{
                                 locale="es"
                             />
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={4} md={2} className="mt-2 mt-md-0">
                             <Form.Control 
                                 as="select" 
                                 custom 
@@ -127,11 +128,11 @@ class Task extends React.Component{
                                 ))}
                             </Form.Control>
                         </Col>
-                        <Col xs={1} className="justify-center">
-                            <Button type="button" className="mb-2 mr-1 ml-2" onClick={(e) => this.disable(e)}>
+                        <Col xs={4} md={2} className="justify-center padding-task mt-2 mt-md-0">
+                            <Button type="button" className="mb-2" onClick={(e) => this.disable(e)}>
                                 <PencilSquare/>
                             </Button>
-                            <Button type="button" className="mb-2 mr-1 ml-1" variant="danger" onClick={() => this.props.deleteTaskFn(this.props.task.id)}>
+                            <Button type="button" className="mb-2" variant="danger" onClick={() => this.props.deleteTaskFn(this.props.task.id)}>
                                 <Trash/>
                             </Button>
                             <Button type="submit" className="mb-2 mr-1 ml-2 d-none" variant="success">
@@ -144,7 +145,7 @@ class Task extends React.Component{
                     </Form.Row>
                 </Form>
         
-                </>
+                </Card>
             )
         }
     }

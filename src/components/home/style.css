@@ -33,3 +33,17 @@
 .task-container{
     margin-top: 4em;
 }
+
+.padding-task{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.task-container .task-card .card-body {
+    padding: 0.5rem;
+}
+
+.task-form{
+    display: flex;
+    align-items: center;
+}

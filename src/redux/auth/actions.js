@@ -5,6 +5,7 @@ function handleResponse(response){
     if(response.ok){
         return response.json();
     }else{
+        console.log('estoy en el error');
         let error = new Error(response.statusText);
         error.response = response;
         throw error;
@@ -26,7 +27,8 @@ export function doLogout(){
 
 export function loginUser(data){
     return dispatch => {
-        let url = "http://localhost:8000/api/v1/login";
+        let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/login';
+        // let url = "http://localhost:8000/api/v1/login";
         let opciones = {
             method: "POST",
             credentials: 'include',
@@ -40,13 +42,14 @@ export function loginUser(data){
         return fetch(url, opciones)
         .then(handleResponse)
         .then(datos => dispatch(setUser(datos.user)))
-        .catch(error => console.log('el error es'+error))
+        // .catch(error => console.log('el error es'+error))
     }
 }
 
 export function logout(){
     return dispatch => {
-        let url = "http://localhost:8000/api/v1/logout";
+        let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/logout';
+        // let url = "http://localhost:8000/api/v1/logout";
         let opciones = {
             method: "POST",
             credentials: 'include',

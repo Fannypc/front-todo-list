@@ -101,7 +101,8 @@ export function deleteTask(taskId){
 
 export function fetchTasks(userId){
     return dispatch => {
-        let url = 'http://localhost:8000/api/v1/users/'+userId+'/tasks/';
+        let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/users/'+userId+'/tasks';
+        // let url = 'http://localhost:8000/api/v1/users/'+userId+'/tasks/';
         let opciones = {
             credentials: 'include',
             method: "GET",

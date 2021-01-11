@@ -9,7 +9,8 @@ export function setStatus(status){
 
 export function fetchStatus(){
     return dispatch => {
-        let url = 'http://localhost:8000/api/v1/status/';
+        let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/status';
+        // let url = 'http://localhost:8000/api/v1/status/';
         let opciones = {
             credentials: 'include',
             method: "GET",

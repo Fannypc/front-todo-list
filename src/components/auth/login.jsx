@@ -7,6 +7,7 @@ import './style.css';
 import { loginUser } from '../../redux/auth/actions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 
 toast.configure();
@@ -14,30 +15,45 @@ class Login extends React.Component{
     constructor(){
         super();
         this.state = {
-            formData:{},
-            estatusPeticion: 0
+            formData:{
+                email: '',
+                password: ''
+            },
+            estatusPeticion: 0,
+            errors: {}
         };
     }
 
     login = evento => {
         evento.preventDefault();        
         this.props.loginUser(this.state.formData).then(
-            () => {
-                // toast.error('Error');
-                console.log('yes');
-            },
-            (err) => err.response.json().then(({errors}) => console.log(errors))
+            () => {},
+            (err) => err.response.json().then(({errors}) => {this.setState({errors});
+                console.log(this.state.errors); 
+                toast.error(this.state.errors.message);
+                this.resetForm();
+                this.setState({
+                    formData:{
+                        email: '',
+                        password: ''
+                    }
+                });
+            })
         );
     };
 
     setInputValue = evento => {
         this.setState({
             formData: {
-            ...this.state.formData,
-            [evento.target.name]: evento.target.value
+                ...this.state.formData,
+                [evento.target.name]: evento.target.value
             }
         });
     };
+
+    resetForm = () => { 
+        document.getElementById("login-form").reset();
+    }
 
     render(){
         if (this.props.user.isAuthenticated){
@@ -55,14 +71,16 @@ class Login extends React.Component{
                                         <div className="col-md-6 justify-content-center align-items-center d-flex">
                                             <div className="p-3">
                                                 <div>LOGIN</div>
-                                                <Form onInput={this.setInputValue} onSubmit={this.login}>
-                                                    <Form.Group controlId="formBasicEmail">
+                                                <Form onInput={this.setInputValue} onSubmit={this.login} id="login-form">
+                                                    <Form.Group controlId="formBasicEmail" className={classnames('error', {error: !!this.state.email})}>
                                                         <Form.Label>Email address</Form.Label>
                                                         <Form.Control type="email" name="email" placeholder="Enter email" />
+                                                        <span>{this.state.errors.email}</span>
                                                     </Form.Group>
-                                                    <Form.Group controlId="formBasicPassword">
+                                                    <Form.Group controlId="formBasicPassword" className={classnames('error', {error: !!this.state.password})}>
                                                         <Form.Label>Password</Form.Label>
                                                         <Form.Control type="password" name="password" placeholder="Password" />
+                                                        <span>{this.state.errors.password}</span>
                                                     </Form.Group>
                                                     <Button variant="primary" type="submit">
                                                         Submit

@@ -18,7 +18,7 @@ export default class NavbarApp extends React.Component{
                     <Navbar.Text>
                         Registrado como: 
                         <a href="#login" title='Cerrar sesión'>
-                            {this.props.user.first_name} {this.props.user.last_name}
+                            {` ${this.props.user.first_name} ${this.props.user.last_name}`}
                         </a>
                     </Navbar.Text>
                     {/* <Button type="button" className="mb-2 d-none" variant="danger"> */}
