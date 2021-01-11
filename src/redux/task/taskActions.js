@@ -73,7 +73,8 @@ export function updateTask(id, data){
             credentials: 'include',
             headers: {
                 "Content-Type": "application/json",
-                "Accept": "application/json"
+                "Accept": "application/json",
+                'Authorization': 'Bearer '+localStorage.getItem('token')
             },
             body: JSON.stringify(data)
         };
@@ -92,7 +93,8 @@ export function deleteTask(taskId){
             credentials: 'include',
             method: "DELETE",
             headers: {
-            "content-type": "application/json"
+                "content-type": "application/json",
+                'Authorization': 'Bearer '+localStorage.getItem('token')
             }
         };
 
