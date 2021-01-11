@@ -85,7 +85,6 @@ class Home extends React.Component{
     userLogout = () => {
         this.props.logout().then(
             () => {
-                console.log('yes');
                 this.props.history.push('/login');
             },
             (err) => err.response.json().then(({errors}) => console.log(errors))
@@ -150,7 +149,7 @@ class Home extends React.Component{
                                         locale="es"
                                     />
                             </Col>
-                            <Col sm={5} xs={5} md={5} xl={2} className={"mt-2 mt-xl-0 "+classnames('error', {error: !!this.state.status_id})}>
+                            <Col sm={5} xs={4} md={5} xl={2} className={"mt-2 mt-xl-0 "+classnames('error', {error: !!this.state.status_id})}>
                                 <Form.Control as="select" custom name="status_id">
                                     <option value="" hidden>Seleccionar</option>
                                     {this.props.status ? this.props.status.map((status)=>(
@@ -161,7 +160,7 @@ class Home extends React.Component{
                                 </Form.Control>
                                 <span>{this.state.errors.status_id}</span>
                             </Col>
-                            <Col sm={3} xs={3} md={2} xl={1} className="mt-2 mt-xl-0">
+                            <Col sm={3} xs={4} md={2} xl={1} className="mt-2 mt-xl-0">
                                 <Button type="submit" className="mb-2">
                                     Submit
                                 </Button>

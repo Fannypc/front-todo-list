@@ -90,7 +90,7 @@ class Task extends React.Component{
             el.tagName !== 'BUTTON' 
         ));
         for (var j = 0; j < allElements.length; ++j) {
-            allElements[i].disabled=!allElements[i].disabled;
+            allElements[j].disabled=!allElements[j].disabled;
         }
     }
 
