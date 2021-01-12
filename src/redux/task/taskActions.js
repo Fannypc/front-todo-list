@@ -5,10 +5,8 @@ export const TASK_DELETED = 'TASK_DELETED';
 
 function handleResponse(response){
     if(response.ok){
-        console.log('estoy en el ok');
         return response.json();
     }else{
-        console.log('estoy en el error');
         let error = new Error(response.statusText);
         error.response = response;
         throw error;
@@ -66,7 +64,7 @@ export function saveTask(data){
 
 export function updateTask(id, data){
     return dispatch => {
-        let url = "https://vast-thicket-80304.herokuapp.com/api/v1/tasks"+id;
+        let url = "https://vast-thicket-80304.herokuapp.com/api/v1/tasks/"+id;
         // let url = "http://localhost:8000/api/v1/tasks/"+id;
         let opciones = {
             method: "PUT",
@@ -87,7 +85,7 @@ export function updateTask(id, data){
 
 export function deleteTask(taskId){
     return dispatch => {
-        let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/tasks'+taskId;
+        let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/tasks/'+taskId;
         // let url = 'http://localhost:8000/api/v1/tasks/'+taskId;
         let opciones = {
             credentials: 'include',
@@ -101,7 +99,6 @@ export function deleteTask(taskId){
         return fetch(url, opciones)
         .then(handleResponse)
         .then(data => dispatch(taskDeleted(taskId)))
-        .catch(error => console.log(error));
     }
 }
 
@@ -122,6 +119,6 @@ export function fetchTasks(userId){
         .then(respuesta => respuesta.json())
         // .then(handleResponse)
         .then(data => dispatch(setTasks(data.user.tasks)))
-        // .catch(error => console.log(error));
+        .catch(error => console.log(error));
     }
 }

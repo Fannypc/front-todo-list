@@ -5,7 +5,6 @@ function handleResponse(response){
     if(response.ok){
         return response.json();
     }else{
-        console.log('estoy en el error');
         let error = new Error(response.statusText);
         error.response = response;
         throw error;
