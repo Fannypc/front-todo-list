@@ -18,3 +18,9 @@
     border-radius: 30px !important;
 }
 
+
+.user-dummy-container{
+    margin: 0 0 1.5rem 0;
+    border: 1px #cec6c6 solid;
+    padding: 0.3rem;
+}
