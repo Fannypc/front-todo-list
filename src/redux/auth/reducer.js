@@ -8,7 +8,8 @@ export default function user(state=[], action={}){
         case DO_LOGOUT:
             window.localStorage.clear();
             // return state={...action.user, isAuthenticated: false};
-            return state=[];
+            // return state=[{user: {isAuthenticated: false}}];
+            return state = []
         default: return state;
     }
 }

@@ -14,7 +14,8 @@ import '../common/style.css';
 import './style.css';
 import { connect } from 'react-redux';
 import { fetchTasks, updateTask } from '../../redux/task/taskActions';
-
+import { logout } from '../../redux/auth/actions';
+import {withRouter} from 'react-router-dom';
 
 toast.configure();
 registerLocale('es', es);
@@ -51,7 +52,23 @@ class Task extends React.Component{
                 toast.success('Tarea editada con exito');
                 this.props.fetchTasks();
             },
-            (err) => {console.log('error:');console.log(err);err.response.json().then(({errors}) => console.log(errors))}
+            (err) => {
+                if (err.response.status === 401){
+                    this.userLogout();
+                }else {
+                    err.response.json().then(({errors}) => {
+                        this.setState({errors})
+                    })
+                }
+        });
+    }
+
+    userLogout = () => {
+        this.props.logout().then(
+            () => {
+                this.props.history.push('/login');
+            },
+            (err) => err.response.json().then(({errors}) => console.log(errors))
         );
     }
 
@@ -151,4 +168,4 @@ class Task extends React.Component{
     }
 }
 
-export default connect(null, {fetchTasks, updateTask})(Task);
+export default withRouter(connect(null, {fetchTasks, updateTask, logout})(Task));

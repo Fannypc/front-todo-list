@@ -4,14 +4,8 @@ import { connect } from 'react-redux';
 
 export default function(ComposedComponent){
     class Authenticate extends React.Component{
-        componentWillMount(){
+            componentDidMount(){
             if(!this.props.isAuthenticated){
-                this.props.history.push('/login');
-            }
-        }
-
-        UNSAFE_componentWillUpdate(nextProps){
-            if(!nextProps.isAuthenticated){
                 this.props.history.push('/login');
             }
         }

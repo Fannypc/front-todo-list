@@ -6,6 +6,7 @@ import {
     Card,
     Form
 } from 'react-bootstrap';
+import {Redirect} from 'react-router-dom';
 import Task from './task';
 import NavbarApp from '../common/navbar';
 import DatePicker from 'react-datepicker';
@@ -47,15 +48,6 @@ class Home extends React.Component{
     componentDidMount(){
         if(this.props.user.isAuthenticated){
             this.props.fetchTasks(this.props.user.id);
-            // try{
-            //     this.props.fetchTasks(this.props.user.id);
-            // }catch(errors){
-            //     this.setState({errors});
-            //     console.log(this.state.errors);
-            // }
-
-            // this.props.fetchTasks(this.props.user.id)
-            // .then(()=>{},(err)=>{err.response.json().then(({errors})=>{this.setState({errors})})});
             this.props.fetchStatus();
         }
     }
@@ -66,7 +58,6 @@ class Home extends React.Component{
         if (this.state.formData.content === '') errors.content = "Informar campo"
         if (this.state.formData.status_id === '') errors.status_id = "Informar campo"
         this.setState({errors});
-        // const isValid = Object.keys(errors).length === 0
 
         if (true){
             this.props.saveTask(this.state.formData).then(
@@ -75,8 +66,15 @@ class Home extends React.Component{
                     this.resetCreateForm();
                     this.props.fetchTasks();
                 },
-                (err) => err.response.json().then(({errors}) => this.setState({errors}))
-            );
+                (err) => {
+                    if (err.response.status === 401){
+                        this.userLogout();
+                    }else {
+                        err.response.json().then(({errors}) => {
+                            this.setState({errors})
+                        })
+                    }
+            });
         }
 
     }
@@ -87,8 +85,15 @@ class Home extends React.Component{
                 toast.success('Tarea eliminada con exito');
                 this.props.fetchTasks();
             },
-            (err) => err.response.json().then(({errors}) => console.log(errors))
-        );
+            (err) => {
+                if (err.response.status === 401){
+                    this.userLogout();
+                }else {
+                    err.response.json().then(({errors}) => {
+                        this.setState({errors})
+                    })
+                }
+        });
     }
 
     userLogout = () => {
@@ -137,6 +142,12 @@ class Home extends React.Component{
     }
 
     render(){
+        if (!this.props.user.isAuthenticated){
+            return(
+                <Redirect to="/login"/>
+            )
+        }
+
         return(
             <>
             <NavbarApp user={this.props.user} logoutFn={this.userLogout}/>
