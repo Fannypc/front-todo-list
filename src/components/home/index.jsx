@@ -150,6 +150,7 @@ class Home extends React.Component{
 
         return(
             <>
+            <div className="home-bg-img">
             <NavbarApp user={this.props.user} logoutFn={this.userLogout}/>
             <Row className="justify-content-md-center home-dashboard m-0">
                 <Col lg="10">
@@ -203,6 +204,7 @@ class Home extends React.Component{
                     </Card>
                 </Col>
             </Row>
+            </div>
             </>
         )
 
