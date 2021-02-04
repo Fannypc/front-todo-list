@@ -12,9 +12,9 @@ export default class NavbarApp extends React.Component{
                 <Navbar.Collapse className="justify-content-end">
                     <Navbar.Text>
                         Registrado como: 
-                        <a href="#login" title='Cerrar sesión'>
+                        <span className="navbar-username">
                             {` ${this.props.user.first_name} ${this.props.user.last_name}`}
-                        </a>
+                        </span>
                     </Navbar.Text>
                     <Navbar.Text className="logout-icon" title="Cerrar sesión" onClick={this.props.logoutFn}>
                         <BoxArrowInRight/>

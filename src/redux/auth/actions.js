@@ -44,6 +44,25 @@ export function loginUser(data){
     }
 }
 
+export function registerUser(data){
+    return dispatch => {
+        let url = "https://vast-thicket-80304.herokuapp.com/api/v1/register";
+        // let url = "http://localhost:8000/api/v1/register";
+        let opciones = {
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(data)
+        };
+    
+        return fetch(url, opciones)
+        .then(handleResponse)
+        .then(data => dispatch(setUser(data)))
+    }
+}
+
 export function logout(){
     return dispatch => {
         let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/logout';

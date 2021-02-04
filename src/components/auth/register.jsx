@@ -2,44 +2,44 @@ import React from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import {Route, Redirect, Link} from 'react-router-dom';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { registerUser } from '../../redux/auth/actions';
 import {toast} from 'react-toastify';
 
 
 toast.configure();
-export default class Register extends React.Component{
+class Register extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            formData:{},
-            estatusPeticion:0,
+            formData:{
+                first_name: '',
+                last_name: '',
+                email: '',
+                password: ''
+            }
         };
     }
 
     register = evento => {
         evento.preventDefault();
-        let url = "http://localhost:8000/api/v1/register";
-        let opciones = {
-            method: "POST",
-            headers: {
-            "content-type": "application/json"
-            },
-            body: JSON.stringify(this.state.formData)
-        };
-
-        fetch(url, opciones)
-        .then(respuesta => {
-            this.setState({estatusPeticion:respuesta.status});
-            return respuesta.json();
-        })
-        .then(datos => {
-            console.log(datos.message);
-            if(this.state.estatusPeticion!==200){
-                toast(datos.message);
-            }
-        })
-        .catch(error => {
-            console.log(error);
-        });
+        this.props.registerUser(this.state.formData).then(
+            () => {},
+            (err) => err.response.json().then(({errors}) => {this.setState({errors});
+                toast.error(this.state.errors.message);
+                this.resetForm();
+                this.setState({
+                    formData:{
+                        first_name: '',
+                        last_name: '',
+                        email: '',
+                        password: ''
+                    }
+                });
+            })
+        );
+        
     };
 
     setInputValue = evento => {
@@ -51,9 +51,13 @@ export default class Register extends React.Component{
         });
     };
 
+    resetForm = () => { 
+        document.getElementById("register-form").reset();
+    }
+
+
     render(){
-        const {estatusPeticion} = this.state;
-        if (estatusPeticion===200){
+        if (this.props.user.isAuthenticated){
             return (<Route><Redirect to='/'/></Route>);
         }
 
@@ -68,7 +72,7 @@ export default class Register extends React.Component{
                                     <div className="col-md-6 justify-content-center align-items-center d-flex">
                                         <div className="p-4">
                                             <div>REGISTRO</div>
-                                            <Form onInput={this.setInputValue} onSubmit={this.register}>
+                                            <Form onInput={this.setInputValue} onSubmit={this.register} id="register-form">
                                                 <Form.Group controlId="formBasicEmail">
                                                     <Form.Label>Nombre</Form.Label>
                                                     <Form.Control type="text" name="first_name" placeholder="Ingresa tu nombre" />
@@ -108,3 +112,15 @@ export default class Register extends React.Component{
     }
 
 }
+
+Register.propTypes = {
+    registerUser: PropTypes.func.isRequired
+}
+
+function mapStateToProps(state){
+    return{
+        user: state.user
+    }
+}
+
+export default connect(mapStateToProps, {registerUser})(Register);

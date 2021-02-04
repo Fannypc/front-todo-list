@@ -20,7 +20,6 @@ class Login extends React.Component{
                 email: '',
                 password: ''
             },
-            estatusPeticion: 0,
             errors: {}
         };
     }

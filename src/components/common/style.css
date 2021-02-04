@@ -42,3 +42,7 @@ body{
 .break-word {
     overflow-wrap: break-word;
 }
+
+.navbar-username {
+    color: black;
+}
