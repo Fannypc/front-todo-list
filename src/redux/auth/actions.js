@@ -26,8 +26,8 @@ export function doLogout(){
 
 export function loginUser(data){
     return dispatch => {
-        let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/login';
-        // let url = "http://localhost:8000/api/v1/login";
+        // let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/login';
+        let url = "http://localhost:8000/api/v1/login";
         let opciones = {
             method: "POST",
             credentials: 'include',
@@ -65,8 +65,8 @@ export function registerUser(data){
 
 export function logout(){
     return dispatch => {
-        let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/logout';
-        // let url = "http://localhost:8000/api/v1/logout";
+        // let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/logout';
+        let url = "http://localhost:8000/api/v1/logout";
         let opciones = {
             method: "POST",
             // credentials: 'include',

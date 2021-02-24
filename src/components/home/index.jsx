@@ -64,7 +64,15 @@ class Home extends React.Component{
                 () => {
                     toast.success('Tarea creada con exito');
                     this.resetCreateForm();
-                    this.props.fetchTasks();
+                    this.setState({
+                        formData: {
+                            content: '',
+                            due_date: new Date(),
+                            user_id: this.props.user.id,
+                            status_id: ''
+                        }
+                    })
+                    this.props.fetchTasks(this.props.user.id);
                 },
                 (err) => {
                     if (err.response.status === 401){
@@ -83,7 +91,7 @@ class Home extends React.Component{
         this.props.deleteTask(id).then(
             () => {
                 toast.success('Tarea eliminada con exito');
-                this.props.fetchTasks();
+                this.props.fetchTasks(this.props.user.id);
             },
             (err) => {
                 if (err.response.status === 401){

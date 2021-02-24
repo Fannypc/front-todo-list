@@ -47,8 +47,8 @@ export function taskDeleted(taskId){
 
 export function saveTask(data){
     return dispatch => {
-        let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/tasks';
-        // let url = "http://localhost:8000/api/v1/tasks/";
+        // let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/tasks';
+        let url = "http://localhost:8000/api/v1/tasks/";
         let opciones = {
             method: "POST",
             headers: {
@@ -67,8 +67,8 @@ export function saveTask(data){
 
 export function updateTask(id, data){
     return dispatch => {
-        let url = "https://vast-thicket-80304.herokuapp.com/api/v1/tasks/"+id;
-        // let url = "http://localhost:8000/api/v1/tasks/"+id;
+        // let url = "https://vast-thicket-80304.herokuapp.com/api/v1/tasks/"+id;
+        let url = "http://localhost:8000/api/v1/tasks/"+id;
         let opciones = {
             method: "PUT",
             credentials: 'include',
@@ -88,8 +88,8 @@ export function updateTask(id, data){
 
 export function deleteTask(taskId){
     return dispatch => {
-        let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/tasks/'+taskId;
-        // let url = 'http://localhost:8000/api/v1/tasks/'+taskId;
+        // let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/tasks/'+taskId;
+        let url = 'http://localhost:8000/api/v1/tasks/'+taskId;
         let opciones = {
             credentials: 'include',
             method: "DELETE",
@@ -107,8 +107,8 @@ export function deleteTask(taskId){
 
 export function fetchTasks(userId){
     return dispatch => {
-        let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/users/'+userId+'/tasks';
-        // let url = 'http://localhost:8000/api/v1/users/'+userId+'/tasks/';
+        // let url = 'https://vast-thicket-80304.herokuapp.com/api/v1/users/'+userId+'/tasks';
+        let url = 'http://localhost:8000/api/v1/users/'+userId+'/tasks/';
         let opciones = {
             // credentials: 'include',
             method: "GET",
