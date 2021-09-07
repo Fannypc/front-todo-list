@@ -27,19 +27,20 @@ class Login extends React.Component{
     login = evento => {
         evento.preventDefault();        
         this.props.loginUser(this.state.formData).then(
-            () => {},
-            (err) => err.response.json().then(({errors}) => {this.setState({errors});
-                console.log(this.state.errors); 
-                toast.error(this.state.errors.message);
-                this.resetForm();
-                this.setState({
-                    formData:{
-                        email: '',
-                        password: ''
-                    }
-                });
-            })
-        );
+            () => {}
+        )
+        .catch(            
+        (err) => err.response.json().then(({errors}) => {this.setState({errors});
+        console.log(this.state.errors); 
+        toast.error(this.state.errors.message);
+        this.resetForm();
+        this.setState({
+            formData:{
+                email: '',
+                password: ''
+            }
+        });
+    }))
     };
 
     setInputValue = evento => {
